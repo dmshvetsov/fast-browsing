@@ -1,0 +1,13 @@
+{
+  "name": "Fast Browsing",
+  "description": "Build an Extension!",
+  "version": "0.0.1",
+  "manifest_version": 3,
+  "permissions": ["storage"],
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"]
+    }
+  ]
+}
