@@ -1,7 +1,7 @@
 const DEBUG = false;
 
 const debug = DEBUG ? {
-  verbose: (msg) => DEBUG && console.log('fast-browsing:verbose', msg)
+  verbose: (...msg) => DEBUG && console.log('fast-browsing:verbose', ...msg)
 } : {
   verbose: () => { }
 }
@@ -29,11 +29,16 @@ const keyBindings = {
   }
 };
 
+const isUserInteractsWithPageContent = (event) => typeof event.target.type !== 'undefined'
+
 const keyDownHandler = (event) => {
   debug.verbose(`key down with code [${event.code}] received`)
+  if (isUserInteractsWithPageContent(event)) {
+    return
+  }
 
   const command = keyBindings.find(event.code)
-  const page = new FastPage({ windowObject: window })
+  const page = new FastPage({ windowObject: window, documentObject: document })
   if (page[command.name]) {
     page[command.name](...command.args)
     debug.verbose(`key down with code [${event.code}] that corresponds to command [${command.name}] with arguments [${command.args}] handled`)
