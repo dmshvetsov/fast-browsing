@@ -30,10 +30,11 @@ const keyBindings = {
 };
 
 const isUserInteractsWithPageContent = (event) => typeof event.target.type !== 'undefined'
+const isUserInteractWithContentEditable = (event) => event.target.contentEditable === 'true'
 
 const keyDownHandler = (event) => {
   debug.verbose(`key down with code [${event.code}] received`)
-  if (isUserInteractsWithPageContent(event)) {
+  if (isUserInteractsWithPageContent(event) || isUserInteractWithContentEditable(event)) {
     return
   }
 
