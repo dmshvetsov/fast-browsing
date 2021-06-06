@@ -1,4 +1,4 @@
-const DEBUG = false;
+const DEBUG = false
 
 const debug = DEBUG ? {
   verbose: (...msg) => DEBUG && console.log('fast-browsing:verbose', ...msg)
@@ -27,7 +27,16 @@ const keyBindings = {
   find(code) {
     return keyBindings.BINDING[code] || keyBindings.NO_BINDING
   }
-};
+}
+
+const applyCommandToPage = (command) => {
+  const page = new FastPage({ windowObject: window, documentObject: document })
+  if (page[command.name]) {
+    page[command.name](...command.args)
+    return true
+  }
+  return false
+}
 
 const isUserInteractsWithForm = (event) => typeof event.target.type !== 'undefined'
 const isUserInteractWithContentEditable = (event) => event.target.contentEditable === 'true'
@@ -39,13 +48,11 @@ const keyDownHandler = (event) => {
   }
 
   const command = keyBindings.find(event.code)
-  const page = new FastPage({ windowObject: window, documentObject: document })
-  if (page[command.name]) {
-    page[command.name](...command.args)
+  if (applyCommandToPage(command)) {
     debug.verbose(`key down with code [${event.code}] that corresponds to command [${command.name}] with arguments [${command.args}] handled`)
-    return
+  } else {
+    debug.verbose(`page no [${event.code}] that corresponds to command [${command.name}] has no support on page object`)
   }
-  debug.verbose(`page no [${event.code}] that corresponds to command [${command.name}] has no support on page object`)
 }
 
 document.onkeydown = keyDownHandler
